@@ -1,29 +1,17 @@
 <template>
-  <header class="header">
-    <div class="flex flex-col w-4/5 max-w-6xl">
-      <div class="flex items-center justify-between py-10">
-        <div class="w-28 lg:w-36">
-          <img class="w-full" src="../../assets/images/logo_white.png" alt="logo">
-        </div>
-        <div class="flex">
-          <button class="px-6 py-2 font-bold rounded-full text-white focus:outline-none">Crie uma conta</button>
-          <button class="px-6 py-2 font-bold rounded-full bg-white text-brand-main focus:outline-none">Entrar</button>
-        </div>
+  <div class="flex justify-center w-full">
+    <div class="flex flex-col items-center w-4/5 max-w-6xl my-16">
+      <h1 class="text-4xl font-black text-center text-gray-800">
+        Alguma dúvida?
+      </h1>
+      <p class="text-lg text-center text-gray-800 font-regular">
+        Quer saber melhor como funciona e quais são os preços?
+      </p>
+      <div class="mt-10">
+        <a href="mailto:" class="px-6 py-2 mt-10 font-bold text-white rounded-full bg-brand-main focus:outline-none">
+          Nos mande um e-mail!
+        </a>
       </div>
     </div>
-
-  </header>
+  </div>
 </template>
-<script>
-export default {
-
-}
-</script>
-
-<style lang="postcss" scoped>
-.header {
- @apply bg-brand-main w-full flex justify-center;
- height: 700px;
-}
-
-</style>
