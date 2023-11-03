@@ -1,14 +1,15 @@
+// Criando um hook para gerar um serviço de evento para controlar o modal.
 import bus from '../utils/bus'
 
 const EVENT_NAME = 'modal:toggle'
 
 export default function useModal() {
   function open(payload = {}) {
-    bus.emit(EVENT_NAME, {status: true, ...payload})
+    bus.emit(EVENT_NAME, { status: true, ...payload })
   }
 
   function close(payload = {}) {
-    bus.emit(EVENT_NAME, {status: false, ...payload})
+    bus.emit(EVENT_NAME, { status: false, ...payload })
   }
 
   function listen(fn) {
@@ -20,5 +21,4 @@ export default function useModal() {
   }
 
   return { open, close, listen, off }
-
 }
