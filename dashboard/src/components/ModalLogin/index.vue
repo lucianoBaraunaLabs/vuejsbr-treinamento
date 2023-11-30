@@ -63,6 +63,7 @@
         }"
         class="px-8 py-3 mt-10 text-2xl font-bold text-white rounded-full bg-brand-main focus:outline-none transition-all duration-150"
       >
+
         <icon v-if="state.isLoading" name="loading" class="animate-spin" />
         <span v-else>Entrar</span>
       </button>
@@ -73,6 +74,7 @@
 import { reactive } from 'vue';
 import { useField} from 'vee-validate'
 import useModal from '../../hooks/useModal';
+import Icon from '../Icon/index.vue'
 import { validateEmptyAndLength3, validateEmptyAndEmail } from '../../utils/validators'
 import services from '../../services';
 import { useRouter } from 'vue-router';
@@ -80,6 +82,9 @@ import { useToast} from 'vue-toastification'
 
 export default {
   name: 'ModalLogin',
+  components: {
+    Icon
+  },
 
   setup() {
     const router = useRouter()
