@@ -1,6 +1,6 @@
 <template>
-   <div class="flex justify-center w-full h-28 bg-brand-main">
-      <header-logged />
+  <div class="flex justify-center w-full h-28 bg-brand-main">
+    <header-logged />
   </div>
 
   <div class="flex flex-col items-center justify-center h-64 bg-brand-gray">
@@ -21,17 +21,14 @@
         Este aqui é a sua chave de api
       </p>
 
-      <content-loader
-        v-if="store.Global.isLoading || state.isLoading"
-        class="rouded"
-        width="600px"
-        height="50px"
-      />
-      <div class="flex py-3 pl-5 pr-20 mt-2 rounded items-center bg-brand-gray">
-        <span>{{ store.User.currentUser.apiKey }}</span>
-        <div class="flex ml-20 mr-5">
-          <icon name="copy" :color="brandColors" size="24" class="cursor-pointer" />
-          <icon name="loading" :color="brandColors" size="24" class="cursor-pointer ml-3" />
+      <content-loader v-if="store.Global.isLoading || state.isLoading" class="rounded" width="600px" height="50px" />
+      <div v-else class="flex py-3 pl-5 mt-2 rounded justify-between items-center bg-brand-gray w-full lg:w-1/2">
+        <span v-if="state.hasError">Erro ao carregar a apikey</span>
+        <span v-else id="apikey">{{ store.User.currentUser.apiKey }}</span>
+        <div class="flex gap-5 ml-20 mr-5 items-center" v-if="!state.hasError">
+          <icon @click="handleCopy" name="copy" :color="brandColors.graydark" size="24" class="cursor-pointer" />
+          <button @click="handleGenerateApikey" type="button" class="bg-brand-main hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">reload</button>
+          <icon id="generate-apikey" @click="handleGenerateApikey" name="loading" :color="brandColors.graydark" size="24" class="cursor-pointer ml-3" />
         </div>
       </div>
 
@@ -39,43 +36,84 @@
         Coloque o script abaixo no seu site para começar a receber feedbacks
       </p>
 
-      <content-loader
-        v-if="store.Global.isLoading || state.isLoading"
-        class="rouded"
-        width="600px"
-        height="50px"
-      />
-
-      <div class="py-3 pl-5 pr-20 mt-2 rounded bg-brand-gray w-full lg:w-2/3 overflow-x-scroll">
-        <pre>
-          &lt;script
-            defer
-            async
-            onload="init('{{ store.User.currentUser.apiKey }}')"
-            src="https://lucianobarauna-feedbacker-widget.netlify.app/init.js"
-          &gt;&lt;/script&gt;
+      <content-loader v-if="store.Global.isLoading || state.isLoading" class="rounded" width="600px" height="50px" />
+      <div v-else class="py-3 pl-5 pr-20 mt-2 rounded bg-brand-gray w-full lg:w-2/3 overflow-x-scroll">
+        <span v-if="state.hasError">Erro ao carregar o script</span>
+        <pre v-else>
+&lt;script
+  defer
+  async
+  onload="init('{{ store.User.currentUser.apiKey }}')"
+  src="https://igorhalfeld-feedbacker-widget.netlify.app/init.js"
+&gt;&lt;/script&gt;
         </pre>
       </div>
     </div>
   </div>
 </template>
-<script>
-import HeaderLogged from '../../components/HeaderLogged/index.vue'
-import Icon from '../../components/Icon/index.vue'
-import ContentLoader from '../../components/ContentLoader/index.vue'
-import useStore from '../../hooks/useStore'
-import { reactive } from 'vue'
 
+<script>
+import { reactive, watch } from 'vue'
+import { useToast } from 'vue-toastification'
+import HeaderLogged from '../../components/HeaderLogged/index.vue'
+import ContentLoader from '../../components/ContentLoader/index.vue'
+import Icon from '../../components/Icon/index.vue'
+import useStore from '../../hooks/useStore'
+// import palette from '../../../palette'
+import services from '../../services'
+import { setApiKey } from '../../store/user'
 
 export default {
-  components: { HeaderLogged, Icon, ContentLoader },
+  components: { ContentLoader, HeaderLogged, Icon },
   setup () {
     const store = useStore()
+    const toast = useToast()
     const state = reactive({
+      hasError: false,
       isLoading: false
     })
 
-    return { store, state, brandColors: '#F9F9F9' }
+    watch(() => store.User.currentUser, () => {
+      if (!store.Global.isLoading && !store.User.currentUser.apiKey) {
+        handleError(true)
+      }
+    })
+
+    function handleError (error) {
+      state.isLoading = false
+      state.hasError = !!error
+    }
+
+    async function handleGenerateApikey () {
+      try {
+        state.isLoading = true
+        const { data } = await services.users.generateApikey()
+
+        setApiKey(data.apiKey)
+        state.isLoading = false
+      } catch (error) {
+        handleError(error)
+      }
+    }
+
+    async function handleCopy () {
+      toast.clear()
+
+      try {
+        await navigator.clipboard.writeText(store.User.currentUser.apiKey)
+        toast.success('Copiado!')
+      } catch (error) {
+        handleError(error)
+      }
+    }
+
+    return {
+      state,
+      store,
+      handleGenerateApikey,
+      handleCopy,
+      brandColors: '##F9F9F9'
+    }
   }
 }
 </script>
