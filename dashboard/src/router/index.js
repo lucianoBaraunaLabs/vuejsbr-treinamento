@@ -20,7 +20,7 @@ const routes = [
   },
   {
     path: '/credentials',
-    name: 'Credentials',
+    name: 'Credencials',
     component: Credentials,
     meta: {
       hasAuth: true
