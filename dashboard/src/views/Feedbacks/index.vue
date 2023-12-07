@@ -81,7 +81,26 @@ export default {
     })
 
     function handleErros(error) {
+      state.hasError = !!error
+    }
 
+    async function changeFeedbacksType(type) {
+     try {
+        state.isLoadingFeedbacks = true
+        state.pagination.offset = 0
+        state.pagination.limit = 5
+        state.currentFeedbackType = type
+        const {data} = await services.feedbacks.getAll({
+          ...state.pagination,
+          type
+        })
+
+        state.feedbacks = data.results
+        state.pagination = data.pagination
+        state.isLoadingFeedbacks = false
+      } catch (error) {
+        handleErros(error)
+      }
     }
 
     async function fetchFeedbacks() {
@@ -103,7 +122,7 @@ export default {
 
     return {
       state,
-      // changeFeedbacksType
+      changeFeedbacksType
     }
   }
 }
