@@ -46,8 +46,8 @@
 
 <script>
 import { reactive } from 'vue'
-// import Filters from './Filters'
-// import FiltersLoading from './FiltersLoading'
+import Filters from './Filters.vue'
+import FiltersLoading from './FiltersLoading.vue'
 import HeaderLogged from '../../components/HeaderLogged/index.vue'
 // import FeedbackCard from '../../components/FeedbackCard'
 // import FeedbackCardLoading from '../../components/FeedbackCard/Loading'
@@ -56,8 +56,8 @@ import HeaderLogged from '../../components/HeaderLogged/index.vue'
 export default {
   components: {
     HeaderLogged,
-    // Filters,
-    // FiltersLoading,
+    Filters,
+    FiltersLoading,
     // FeedbackCard,
     // FeedbackCardLoading
   },
