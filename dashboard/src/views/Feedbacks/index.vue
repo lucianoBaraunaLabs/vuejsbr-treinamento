@@ -45,21 +45,21 @@
 </template>
 
 <script>
-import { reactive } from 'vue'
+import { onMounted, reactive } from 'vue'
 import Filters from './Filters.vue'
 import FiltersLoading from './FiltersLoading.vue'
 import HeaderLogged from '../../components/HeaderLogged/index.vue'
-// import FeedbackCard from '../../components/FeedbackCard'
-// import FeedbackCardLoading from '../../components/FeedbackCard/Loading'
-// import services from '../../services'
+import FeedbackCard from '../../components/FeedbackCard/index.vue'
+import FeedbackCardLoading from '../../components/FeedbackCard/Loading.vue'
+import services from '../../services'
 
 export default {
   components: {
     HeaderLogged,
     Filters,
     FiltersLoading,
-    // FeedbackCard,
-    // FeedbackCardLoading
+    FeedbackCard,
+    FeedbackCardLoading
   },
   setup () {
     const state = reactive({
@@ -75,6 +75,31 @@ export default {
       },
       hasError: false
     })
+
+    onMounted(() => {
+      fetchFeedbacks()
+    })
+
+    function handleErros(error) {
+
+    }
+
+    async function fetchFeedbacks() {
+      try {
+        state.isLoading = true
+        state.isLoadingFeedbacks = true
+        const { data } = await services.feedbacks.getAll({
+          ...state.pagination,
+          type: state.currentFeedbackType
+        })
+        state.feedbacks = data.results
+        state.pagination = data.pagination
+        state.isLoading = false
+        state.isLoadingFeedbacks = false
+      } catch (error) {
+        handleErros(error)
+      }
+    }
 
     return {
       state,
