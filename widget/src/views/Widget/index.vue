@@ -1,11 +1,42 @@
 <template>
-  <div class="fixed bottom-0 right-0">
-    <h1>Widget</h1>
-    <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Unde odit, pariatur ducimus nesciunt, qui, tenetur aut atque eum placeat sint aspernatur nobis beatae maiores optio voluptatum quibusdam rem facere ab!</p>
-  </div>
+  <teleport to="body">
+    <component @open-box="handleOpenBox" @close-box="handleCloseBox" :is="state.component" />
+  </teleport>
 </template>
 <script lang="ts">
-export default {
+import { defineComponent, reactive } from 'vue'
+import Standby from './Standby.vue'
+import Box from './Box.vue'
 
+type State = {
+  component: string
 }
+
+interface SetupReturn {
+  state: State;
+  handleOpenBox: () => void;
+  handleCloseBox: () => void
+}
+
+export default defineComponent(  {
+  components: {
+    Standby,
+    Box
+  },
+  setup(): SetupReturn {
+    const state = reactive<State>({
+        component: 'Standby',
+    })
+
+    function handleOpenBox() {
+      state.component = 'Box'
+    }
+
+    function handleCloseBox() {
+      state.component = 'Standby'
+    }
+
+    return { state, handleOpenBox, handleCloseBox }
+  },
+})
 </script>
