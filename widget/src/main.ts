@@ -1,13 +1,19 @@
 import { createApp } from 'vue'
+import Playground from './views/Playground/index.vue'
 import App from './App.vue'
-import router from './router'
 
 import './assets/css/tailwind.css'
 import './assets/css/fonts.css'
 import 'animate.css'
+import { setup } from './utils/bootstrap'
 
-const app = createApp(App)
-
-app.use(router)
-
-app.mount('#app')
+setup({
+  onProduction: () => {
+    createApp(App).mount('#app')
+    console.log('onProduction')
+  },
+  onDevelopment: () => {
+    createApp(Playground).mount('#app')
+    console.log('onDevelopment')
+  }
+})
