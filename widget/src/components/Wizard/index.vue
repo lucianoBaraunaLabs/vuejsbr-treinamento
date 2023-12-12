@@ -4,9 +4,9 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-// import SelectFeedbackType from './SelectFeedbackType.vue'
-// import WriteAFeedback from './WriteAFeedback.vue'
-// import Success from './Success.vue'
+import SelectFeedbackType from './SelectFeedbackType.vue'
+import WriteAFeedback from './WriteAFeedback.vue'
+import Success from './Success.vue'
 // import ErrorState from './Error.vue'
 import useStore from '../../hooks/store'
 import useNavigation from '../../hooks/navigation'
@@ -21,7 +21,7 @@ interface SetupReturn {
 }
 
 export default defineComponent({
-  // components: { SelectFeedbackType, WriteAFeedback, Success, Error: ErrorState },
+  components: { SelectFeedbackType, WriteAFeedback, Success },
   setup(): SetupReturn {
     const store = useStore()
     const { next } = useNavigation()
