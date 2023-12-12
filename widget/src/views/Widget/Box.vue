@@ -17,7 +17,7 @@
       </button>
     </div>
 
-    <!-- <wizard /> -->
+    <wizard />
 
     <div class="text-gray-800 text-sm flex" v-if="canShowAdditionalControlAndInfo">
       <icon name="chat" class="mr-1" :color="brandColors.graydark" />
@@ -30,12 +30,13 @@
 <script lang="ts">
 import { defineComponent, computed } from 'vue'
 import type { ComputedRef, SetupContext } from 'vue'
-import { brand } from '../../../palette.js'
+import pallete from '../../../palette.js'
 import Icon from '../../components/Icon/index.vue'
-// import Wizard from '../../components/Wizard/index.vue'
+import Wizard from '../../components/Wizard/index.vue'
 import colors from 'tailwindcss/colors'
-import useStore from '@/hooks/index'
-import useNavigation, { Navigation } from '../../hooks/navigation'
+import useStore from '@/hooks/store'
+import useNavigation from '../../hooks/navigation'
+import type { Navigation } from '../../hooks/navigation'
 
 interface SetupReturn {
   emit: SetupContext['emit'];
@@ -83,7 +84,7 @@ export default defineComponent({
       colors,
       label,
       back,
-      brandColors: brand,
+      brandColors: pallete.brand,
       canGoBack,
       canShowAdditionalControlAndInfo
     }
