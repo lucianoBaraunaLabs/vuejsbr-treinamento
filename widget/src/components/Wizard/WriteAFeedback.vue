@@ -28,8 +28,10 @@
 import useNavigation from '@/hooks/navigation';
 import useStore from '@/hooks/store';
 import services from '@/services';
+import { setMessage } from '@/store';
 import { defineComponent, reactive, computed } from 'vue';
-import type { ComputedRef, SetupContext } from 'vue';
+import type { ComputedRef } from 'vue';
+import Icon from '../Icon/index.vue';
 
 type State = {
   feedback: string;
@@ -40,12 +42,14 @@ type State = {
 interface SetupReturn {
   state: State,
   submitButtonIsDisabled: ComputedRef<boolean>
+  submitAFeedback: () => Promise<void>,
 }
 
 export default defineComponent({
-  setup(_, { emit }: SetupContext): SetupReturn {
+  components: { Icon },
+  setup(): SetupReturn {
     const store = useStore()
-    const { setErrorState } = useNavigation()
+    const { setErrorState, setSuccessState } = useNavigation()
     const state = reactive<State>({
       feedback: '',
       isLoading: false,
@@ -63,19 +67,34 @@ export default defineComponent({
      }
 
     async function submitAFeedback(): Promise<void>{
+      setMessage(state.feedback)
+      state.isLoading = true
       try {
         const response = await services.feedbacks.create({
-
+          type: store.feedbackType,
+          text: store.message,
+          page: store.currentPage,
+          apiKey: store.apiKey,
+          device: window.navigator.userAgent,
+          fingerprint: store.fingerprint,
         })
-      } catch (error) {
 
+        if (!response.erros) {
+          setSuccessState()
+        } else {
+          setErrorState()
+        }
+
+        state.isLoading = false
+      } catch (error) {
+        handleError(error)
       }
     }
 
     return {
       state,
-      submitButtonIsDisabled
-
+      submitButtonIsDisabled,
+      submitAFeedback
      }
 
   }
